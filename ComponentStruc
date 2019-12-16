@@ -1,8 +1,0 @@
-Router
-    Switch
-        AuthContext
-            Home
-                BibleVerse
-            Login //this can serve as an Auth?
-            Dash
-                ListItems?
