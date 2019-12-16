@@ -1,24 +1,52 @@
-import React, {useState} from 'react';
-import EmptyDiv from './EmptyDiv'
+import React, {useState, useContext, useEffect} from 'react';
+import EmptyDiv from './EmptyDiv';
 import Checkbox from './Checkbox';
+import {AuthContext} from '../contexts/AuthContext';
+import Service from '../components/Service';
+import {useHistory} from 'react-router-dom';
 
 const Login = ()=>{
 
+
+
+    let history = useHistory()
     const [loginState, setloginState] = useState({savePassword:false})
+    const {dispatch} = useContext(AuthContext);
+    useEffect(()=>{
+        if(localStorage.getItem('creds')){
+            const push = async()=>{
+                let creds = JSON.parse(localStorage.getItem('creds'))
+                try{
+                    const result = await Service.login(creds.id,creds.secret)
+                    dispatch({type:'LOGIN',payload:result})
+                    history.push('/dash')
+                }
+                catch(err){
+                    setloginState({
+                        ...loginState,
+                        error:'Sorry, your credentials have expired, please login again'
+                    })
+                }
+            }
+            push()
+
+        }
+    },[])
+
 
     const updateId = (e)=>{
         setloginState({
             ...loginState,
             id:e.target.value
-        })
-    }
+        });
+    };
 
     const updatePassword = (e)=>{
         setloginState({
             ...loginState,
             secret:e.target.value
-        })
-    }
+        });
+    };
 
 
     const toggleCheckbox =()=>{
@@ -26,7 +54,26 @@ const Login = ()=>{
             ...loginState,
             savePassword:!loginState.savePassword
         })
-    }
+    };
+
+    
+    const handleClick =async ()=>{
+        try{
+            let result = await Service.login(loginState.id,loginState.secret);
+            if(loginState.savePassword){
+                localStorage.setItem('creds',JSON.stringify({id:loginState.id,secret:loginState.secret}))
+            }            
+            dispatch({type:'LOGIN',payload:result});            
+            history.push('/dash')        
+            
+        }
+        catch(err){
+            setloginState({
+                ...loginState,
+                error:err
+            })
+        }
+    };
 
     return(
         <div className="Login grid-center">
@@ -41,8 +88,10 @@ const Login = ()=>{
                 <input type='password' placeholder='secret' onChange={e=>{updatePassword(e)}} ></input>
                 <EmptyDiv height='1rem'/>
                 <Checkbox label='Remember Me' toggle={toggleCheckbox}/>
+                <EmptyDiv height='1rem'/>
+                <div className='error'>{loginState.error}</div>
                 <EmptyDiv height='1.75rem'/>
-                <div className="btn" >Login</div> 
+                <div className="btn" onClick={()=>{handleClick()}} >Login</div> 
             </div>
         </div>
     )

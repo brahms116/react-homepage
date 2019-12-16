@@ -15,6 +15,7 @@
   --bg-clr:#0E0E0E;
   --txt-clr: #E2E2E2;
   --placeholder-clr: #575757;
+  --error-clr:#EB5757;
 
   font-family: 'Roboto Mono', monospace;
   
@@ -88,6 +89,10 @@ input[type='text']:focus,input[type='password']:focus{
 .menu-text:hover{
   opacity: 0.8;
   cursor: pointer;
+}
+
+.error{
+  color:var(--error-clr)
 }
 
 /* global styles- class-buttons*/
@@ -221,6 +226,7 @@ input[type='text']:focus,input[type='password']:focus{
 
 .Login .grid-one-column{
   min-width: 16rem;
+  max-width: 16rem;
 }
 
 .Login h2{

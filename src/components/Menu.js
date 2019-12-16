@@ -1,9 +1,13 @@
 import React from 'react';
 import EmptyDiv from './EmptyDiv';
-
+import {useHistory} from 'react-router-dom'
 const Menu = (props)=>{
-    
+    const history = useHistory()
+    const logout =()=>{
+        if(localStorage.getItem('creds')) localStorage.removeItem('creds');
+        history.push('/')
 
+    }
     
 
     return(
@@ -15,7 +19,7 @@ const Menu = (props)=>{
             </div>
             <div className='grid-one-column'>
                 <EmptyDiv height="3.75rem"/>
-                <div className='menu-text'>Logout--></div>
+                <div className='menu-text' onClick={logout}>Logout--></div>
             </div>
         </div>
         
